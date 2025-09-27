@@ -2,80 +2,58 @@ const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 const API_AUTH_TOKEN = import.meta.env.VITE_API_AUTH_TOKEN;
 
 // Reusable fetch function
-const apiFetch = async (endpoint) => {
+const apiRequest = async (endpoint, options = {}) => {
     if (!API_AUTH_TOKEN) {
         console.error('Missing auth token.');
         throw new Error('Missing Auth Token');
     }
 
     const separator = endpoint.includes('?') ? '&' : '?';
+    const finalUrl = `${API_BASE_URL}${endpoint}${separator}authToken=${API_AUTH_TOKEN}`;
 
-    const fetchUrl = `${API_BASE_URL}${endpoint}${separator}authToken=${API_AUTH_TOKEN}`;
-    const response = await fetch(fetchUrl);
-
-    if (!response.ok) {
-        throw new Error(`API call failed. ${response.status}`);
-    }
-
-    return response.json();
-};
-
-const apiPost = async (endpoint, body) => {
-    if (!API_AUTH_TOKEN) {
-        console.error('Missing auth token.');
-        throw new Error('Missing Auth Token');
-    }
-
-    const postBookingUrl = `${API_BASE_URL}${endpoint}?authToken=${API_AUTH_TOKEN}`;
-    const response = await fetch(postBookingUrl, {
-        method: 'POST',
+    const finalOptions = {
+        ...options,
         headers: {
-            'Content-Type': 'application/json' 
+            'Content-Type': 'application/json',
+            ...options.headers
         },
-        body: JSON.stringify(body)
-    });
-
-    if (!response.ok) {
-        throw new Error(`API call failed: ${response.status}`)
     }
 
-    return response.json();
+    try {
+        const response = await fetch(finalUrl, finalOptions);
+        if (!response.ok) {
+            const errorMessage = response.message || 'API call failed.'
+            throw new Error(errorMessage);
+        }
+
+        if (response.url.includes('delete')) {
+            return { success: true };
+        }
+        return response.json();
+    } catch (error) {
+        console.error(`API Request Error: ${error.message}`);
+        throw error; // Re-throw the error so the component can catch it and update the UI
+    }
 };
 
-const apiDelete = async (endpoint) => {
-     if (!API_AUTH_TOKEN) {
-        console.error('Missing auth token.');
-        throw new Error('Missing Auth Token');
-    }
-
-    const deleteBookingUrl = `${API_BASE_URL}${endpoint}?authToken=${API_AUTH_TOKEN}`;
-    const response = await fetch(deleteBookingUrl, {
-        method: 'DELETE',
-    });
-
-    if (!response.ok) {
-        throw new Error(`API call failed: ${response.status}`)
-    }
-
-    return { success: true };
-};
 
 export const getAirports = () => {
-    return apiFetch('/airports');
+    return apiRequest('/airports');
 };
 
-export const getBookings = (pageIndex = 0, pageSize) => {
-    if (!pageSize) {
-        return apiFetch(`/bookings/?pageIndex=${pageIndex}`);
-    } else {
-        // return apiFetch(`/bookings/?pageIndex=${pageIndex}&pageSize=${pageSize }`);
-    }
+export const getBookings = (pageIndex = 0, pageSize = 5) => {
+    return apiRequest(`/bookings/?pageIndex=${pageIndex}&pageSize=${pageSize}`);
 };
 
 export const createBooking = (bookingData) => {
-    return apiPost('/bookings/create', bookingData);
+    return apiRequest('/bookings/create', {
+        method: 'POST',
+        body: JSON.stringify(bookingData),
+    });
 };
 
 export const deleteBooking = (bookingId) => {
-    return apiDelete(`/bookings/delete/${bookingId}`);
+    return apiRequest(`/bookings/delete/${bookingId}`, {
+        method: 'DELETE',
+    });
 }
