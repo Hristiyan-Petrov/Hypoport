@@ -1,0 +1,61 @@
+@use '../../styles/variables' as *;
+
+.booking-list-item {
+    display: flex;
+    justify-content: space-between;
+    // align-items: center;
+    background-color: $white-bg;
+    padding: $spacing-md;
+    border-radius: $border-radius;
+    border: 1px solid $border-color;
+    transition: all 0.2s;
+    margin-bottom: $spacing-md;
+
+    &:hover {
+        transform: translateY(-2px);
+        cursor: pointer;
+        border: 1px solid $primary-color;
+    }
+}
+
+.booking-details {
+    // display: flex;
+    // flex-direction: column;
+    // justify-content: center;
+
+
+    .passenger-name {
+        font-size: 1.1rem;
+        font-weight: 600;
+        color: $dark-text;
+        margin: 0;
+        margin: 0 0 $spacing-md 0;
+    }
+
+    .flight-info {
+        font-size: 0.9rem;
+        color: $medium-text;
+        margin: 0;
+    }
+}
+
+.booking-actions {
+    display: flex;
+
+    .delete-button {
+        padding: $spacing-md;
+        border: 1px solid #e74c3c;
+        border-radius: $border-radius;
+        background-color: transparent;
+        cursor: pointer;
+        color: #e74c3c;
+        font-weight: 500;
+        font-size: 1rem;
+        transition: all 0.2s;
+
+        &:hover {
+            background-color: #e74c3c;
+            color: $white-bg;
+        }
+    }
+}

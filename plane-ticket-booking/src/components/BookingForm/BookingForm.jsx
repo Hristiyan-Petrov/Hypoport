@@ -12,9 +12,6 @@ export default function BookingForm() {
     });
 
     const handleChange = (e) => {
-        console.log(e.target);
-        console.log(e.currentTarget);
-
         const { name, value } = e.target;
         setFormData(prevState => ({
             ...prevState,

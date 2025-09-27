@@ -2,6 +2,12 @@ import './styles/index.scss';
 import BookingForm from './components/BookingForm/BookingForm'
 import BookingList from './components/BookingList/BookingList';
 
+const MOCK_BOOKINGS = [
+  { id: 1, firstName: 'John', lastName: 'Doe', departureAirport: 'JFK', destinationAirport: 'LAX' },
+  { id: 2, firstName: 'Jane', lastName: 'Smith', departureAirport: 'LHR', destinationAirport: 'CDG' },
+  { id: 3, firstName: 'Peter', lastName: 'Jones', departureAirport: 'SFO', destinationAirport: 'MIA' },
+];
+
 function App() {
     return (
         <>
@@ -14,7 +20,7 @@ function App() {
 
             <main className='main-content'>
                 <BookingForm />
-                <BookingList />
+                <BookingList bookings={MOCK_BOOKINGS}/>
             </main>
         </>
     )
