@@ -1,7 +1,11 @@
 import { useState } from 'react';
 import './BookingForm.scss';
+import { validateBookingForm } from '../../utils/validators';
 
-export default function BookingForm() {
+export default function BookingForm({
+    airports,
+    onBookingFormSubmit
+}) {
     const [formData, setFormData] = useState({
         firstName: '',
         lastName: '',
@@ -10,6 +14,7 @@ export default function BookingForm() {
         departureDate: '',
         returnDate: '',
     });
+    const [errors, setErrors] = useState({});
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -21,8 +26,23 @@ export default function BookingForm() {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        console.log(formData);
-        
+
+        const validationErrors = validateBookingForm(formData);
+        setErrors(validationErrors);
+
+        if (Object.keys(validationErrors).length > 0) {
+            return;
+        } else {
+            onBookingFormSubmit(formData);
+            setFormData({
+                firstName: '',
+                lastName: '',
+                departureAirportId: '',
+                arrivalAirportId: '',
+                departureDate: '',
+                returnDate: '',
+            });
+        }
     };
 
     return (
@@ -41,6 +61,8 @@ export default function BookingForm() {
                             value={formData.firstName}
                             onChange={handleChange}
                         />
+                        {errors.firstName &&
+                            <span className="error-text">{errors.firstName}</span>}
                     </div>
                     {/* Last name */}
                     <div className="form-group">
@@ -52,30 +74,48 @@ export default function BookingForm() {
                             value={formData.lastName}
                             onChange={handleChange}
                         />
+                        {errors.lastName &&
+                            <span className="error-text">{errors.lastName}</span>}
                     </div>
                 </div>
                 {/* Departure Airport */}
                 <div className="form-row">
                     <div className="form-group">
                         <label htmlFor="departureAirportId">Departure Airport</label>
-                        <input
-                            type="text"
+                        <select
                             id='departureAirportId'
                             name='departureAirportId'
                             value={formData.departureAirportId}
                             onChange={handleChange}
-                        />
+                        >
+                            <option value='' disabled>Please select an airport</option>
+                            {airports.map(x => (
+                                <option key={x.id} value={x.id}>
+                                    {x.title} ({x.code})
+                                </option>
+                            ))}
+                        </select>
+                            {errors.departureAirportId &&
+                                <span className="error-text">{errors.departureAirportId}</span>}
                     </div>
                     {/* Arrival Airport */}
                     <div className="form-group">
                         <label htmlFor="arrivalAirportId">Arrival Airport</label>
-                        <input
-                            type="text"
+                        <select
                             id='arrivalAirportId'
                             name='arrivalAirportId'
                             value={formData.arrivalAirportId}
                             onChange={handleChange}
-                        />
+                        >
+                            <option value='' disabled>Please select an airport</option>
+                            {airports.map(x => (
+                                <option key={x.id} value={x.id}>
+                                    {x.title} ({x.code})
+                                </option>
+                            ))}
+                        </select>
+                            {errors.arrivalAirportId &&
+                                <span className="error-text">{errors.arrivalAirportId}</span>}
                     </div>
                 </div>
                 {/* Date of departure */}
@@ -89,6 +129,8 @@ export default function BookingForm() {
                             value={formData.departureDate}
                             onChange={handleChange}
                         />
+                        {errors.departureDate &&
+                            <span className="error-text">{errors.departureDate}</span>}
                     </div>
                     {/* Date of return */}
                     <div className="form-group">
@@ -100,6 +142,8 @@ export default function BookingForm() {
                             value={formData.returnDate}
                             onChange={handleChange}
                         />
+                        {errors.returnDate &&
+                            <span className="error-text">{errors.returnDate}</span>}
                     </div>
                 </div>
 

@@ -18,6 +18,8 @@ body {
   justify-content: center;
   text-align: center;
   color: $white-bg;
+
+  pointer-events: none;
 }
 
 .hero-content {

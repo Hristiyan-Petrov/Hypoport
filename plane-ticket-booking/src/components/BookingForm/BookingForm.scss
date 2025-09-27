@@ -16,12 +16,12 @@
 .booking-form {
     display: flex;
     flex-direction: column;
-    gap: variables.$spacing-md;
+    gap: variables.$spacing-lg;
 }
 
 .form-row {
     display: flex;
-    gap: variables.$spacing-lg;
+    gap: 5rem;
 }
 
 .form-group {
@@ -35,7 +35,7 @@
         margin-bottom: variables.$spacing-sm;
     }
 
-    input {
+    input, select {
         padding: variables.$spacing-sm;
         border: 1px solid variables.$border-color;
         border-radius: variables.$border-radius;
@@ -46,6 +46,11 @@
             border-color: variables.$primary-color;
             transform: translateY(-2px);
         }
+    }
+
+    .error-text {
+        color: variables.$red;
+        margin-top: variables.$spacing-sm;
     }
 }
 

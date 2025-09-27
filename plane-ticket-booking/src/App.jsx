@@ -2,13 +2,7 @@ import './styles/index.scss';
 import BookingForm from './components/BookingForm/BookingForm'
 import BookingList from './components/BookingList/BookingList';
 import { useEffect, useState } from 'react';
-import { getAirports, getBookings } from './services/api';
-
-const MOCK_BOOKINGS = [
-    { id: 1, firstName: 'John', lastName: 'Doe', departureAirport: 'JFK', destinationAirport: 'LAX' },
-    { id: 2, firstName: 'Jane', lastName: 'Smith', departureAirport: 'LHR', destinationAirport: 'CDG' },
-    { id: 3, firstName: 'Peter', lastName: 'Jones', departureAirport: 'SFO', destinationAirport: 'MIA' },
-];
+import { createBooking, getAirports, getBookings } from './services/api';
 
 function App() {
     const [bookings, setBookings] = useState([]);
@@ -23,7 +17,7 @@ function App() {
                 const bookingsResponse = await getBookings(0);
                 const airportsResponse = await getAirports();
 
-                setBookings(bookingsResponse.list);
+                setBookings(bookingsResponse.list.toReversed());
                 setAirports(airportsResponse);
                 setError(null);
             } catch (error) {
@@ -43,6 +37,23 @@ function App() {
         return airport ? airport.code : 'N/A';
     };
 
+    const handleBookingFormSubmit = async (formData) => {
+        try {
+            const parsedData = {
+                ...formData,
+                departureAirportId: Number(formData.departureAirportId),
+                arrivalAirportId: Number(formData.arrivalAirportId),
+            }
+            const newBooking = await createBooking(parsedData);
+            setBookings(prevBookings => [newBooking, ...prevBookings]);
+            alert('You sucessfully created a booking!');
+
+        } catch (error) {
+            console.error("Failed to create new booking:", error);
+            alert('Could not create booking. Please try again.');
+        }
+    };
+
     return (
         <>
             <header className='hero-header'>
@@ -53,7 +64,10 @@ function App() {
             </header>
 
             <main className='main-content'>
-                <BookingForm />
+                <BookingForm
+                    airports={airports}
+                    onBookingFormSubmit={handleBookingFormSubmit}
+                />
                 <BookingList
                     bookings={bookings}
                     isLoading={isLoading}

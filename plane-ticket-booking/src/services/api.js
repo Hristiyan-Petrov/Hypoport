@@ -1,11 +1,11 @@
-const API_BASE_URL=import.meta.env.VITE_API_BASE_URL;
-const API_AUTH_TOKEN=import.meta.env.VITE_API_AUTH_TOKEN;
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+const API_AUTH_TOKEN = import.meta.env.VITE_API_AUTH_TOKEN;
 
 // Reusable fetch function
 const apiFetch = async (endpoint) => {
     if (!API_AUTH_TOKEN) {
         console.error('Missing auth token.');
-        throw new Error ('Missing Auth Token');
+        throw new Error('Missing Auth Token');
     }
 
     const separator = endpoint.includes('?') ? '&' : '?';
@@ -14,7 +14,29 @@ const apiFetch = async (endpoint) => {
     const response = await fetch(fetchUrl);
 
     if (!response.ok) {
-        throw new Error (`API call failed. ${response.statusText}`);
+        throw new Error(`API call failed. ${response.status}`);
+    }
+
+    return response.json();
+};
+
+const apiPost = async (endpoint, body) => {
+    if (!API_AUTH_TOKEN) {
+        console.error('Missing auth token.');
+        throw new Error('Missing Auth Token');
+    }
+
+    const postBookingUrl = `${API_BASE_URL}${endpoint}?authToken=${API_AUTH_TOKEN}`;
+    const response = await fetch(postBookingUrl, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json' 
+        },
+        body: JSON.stringify(body)
+    });
+
+    if (!response.ok) {
+        throw new Error(`API call failed: ${response.status}`)
     }
 
     return response.json();
@@ -30,5 +52,8 @@ export const getBookings = (pageIndex = 0, pageSize) => {
     } else {
         // return apiFetch(`/bookings/?pageIndex=${pageIndex}&pageSize=${pageSize }`);
     }
-}   
+};
 
+export const createBooking = (bookingData) => {
+    return apiPost('/bookings/create', bookingData);
+};

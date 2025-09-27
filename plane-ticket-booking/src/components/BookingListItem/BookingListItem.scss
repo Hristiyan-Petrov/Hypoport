@@ -44,17 +44,17 @@
 
     .delete-button {
         padding: $spacing-md;
-        border: 1px solid #e74c3c;
+        border: 1px solid $red;
         border-radius: $border-radius;
         background-color: transparent;
         cursor: pointer;
-        color: #e74c3c;
+        color: $red;
         font-weight: 500;
         font-size: 1rem;
         transition: all 0.2s;
 
         &:hover {
-            background-color: #e74c3c;
+            background-color: $red;
             color: $white-bg;
         }
     }
