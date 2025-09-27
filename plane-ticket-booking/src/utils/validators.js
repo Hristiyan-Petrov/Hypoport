@@ -14,7 +14,7 @@ export const validateBookingForm = (formData) => {
         const departureDate = new Date(formData.departureDate);
         const returnDate = new Date(formData.returnDate);
 
-        if (returnDate < departureDate) {
+        if (returnDate <= departureDate) {
             errors.returnDate = "Return date cannot be the same or before the departure date.";
         }
     }
