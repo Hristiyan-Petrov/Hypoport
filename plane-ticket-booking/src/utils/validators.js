@@ -10,12 +10,22 @@ export const validateBookingForm = (formData) => {
     if (!formData.returnDate) errors.returnDate = 'Please select return date.';
 
     // Check if the dates are logical
-    if (formData.departureDate && formData.returnDate) {
+    if (formData.departureDate || formData.returnDate) {
         const departureDate = new Date(formData.departureDate);
         const returnDate = new Date(formData.returnDate);
 
-        if (returnDate <= departureDate) {
-            errors.returnDate = "Return date cannot be the same or before the departure date.";
+        if (formData.departureDate && formData.returnDate) {
+            if (returnDate <= departureDate) {
+                errors.returnDate = "Return date cannot be the same or before the departure date.";
+            }
+        }
+
+        if (departureDate <= new Date()) {
+            errors.departureDate = "Departure date cannot be past date.";
+        }
+
+        if (returnDate <= new Date()) {
+            errors.returnDate = "Return date cannot be past date.";
         }
     }
 
