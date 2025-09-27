@@ -1,0 +1,44 @@
+@use './variables' as *;
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  margin: 0;
+  background-color: $light-gray-bg;
+  color: $dark-text;
+}
+
+.hero-header {
+  background-image: linear-gradient(rgba(20, 30, 40, 0.5), rgba(20, 30, 40, 0.7)), url('../assets/passion-bg.jpg');
+  height: 45vh; // Takes 45% of the viewport height
+  background-position: center 60%;
+  background-repeat: no-repeat;
+  background-size: cover;
+
+  display: flex;
+  justify-content: center;
+  text-align: center;
+  color: $white-bg;
+}
+
+.hero-content {
+  h1 {
+    font-size: 3rem;
+    margin-bottom: $spacing-md;
+  }
+
+  p {
+    font-size: 1.25rem;
+    opacity: 0.9;
+  }
+}
+
+.main-content {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: $spacing-lg;
+
+  // Put the content up to slighly overlay the hero image
+  margin-top: -80px;
+  position: relative;
+  z-index: 10;
+}

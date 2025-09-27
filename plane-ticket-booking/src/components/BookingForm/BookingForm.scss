@@ -1,0 +1,70 @@
+@use '../../styles/variables' as variables;
+
+.booking-form-container {
+    background-color: variables.$white-bg;
+    border-radius: variables.$border-radius;
+    margin-bottom: variables.$spacing-lg;
+    padding: variables.$spacing-lg;
+
+    h2 {
+        margin-top: 0;
+        text-align: center;
+        color: variables.$dark-text;
+    }
+}
+
+.booking-form {
+    display: flex;
+    flex-direction: column;
+    gap: variables.$spacing-md;
+}
+
+.form-row {
+    display: flex;
+    gap: variables.$spacing-lg;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+
+    label {
+        font-weight: 600;
+        color: variables.$medium-text;
+        margin-bottom: variables.$spacing-sm;
+    }
+
+    input {
+        padding: variables.$spacing-sm;
+        border: 1px solid variables.$border-color;
+        border-radius: variables.$border-radius;
+        transition: all 0.2s;
+    
+        &:focus {
+            outline: none;
+            border-color: variables.$primary-color;
+            transform: translateY(-2px);
+        }
+    }
+}
+
+.submit-form-button {
+    max-width: fit-content;
+    margin: 0 auto;
+    padding: 1rem;
+    border: none;
+    border-radius: variables.$border-radius;
+    background-color: variables.$primary-color;
+    color: variables.$white-bg;
+    font-size: 1rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s;
+    margin-top: variables.$spacing-lg;
+
+    &:hover {
+        background-color: variables.$primary-hover-color;
+    transform: translateY(-2px);
+    }
+}
