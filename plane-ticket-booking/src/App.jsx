@@ -56,7 +56,10 @@ function App() {
 
     return (
         <>
-            <header className='hero-header'>
+            {/* Holds background image */}
+            <div className="bg-hero"></div>
+
+            <header className='page-header'>
                 <div className="hero-content">
                     <h1>Your Next Journey Awaits</h1>
                     <p>Where will your passion take you?</p>

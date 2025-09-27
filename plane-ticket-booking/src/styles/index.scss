@@ -7,20 +7,28 @@ body {
   color: $dark-text;
 }
 
-.hero-header {
+.bg-hero {
   background-image: linear-gradient(rgba(20, 30, 40, 1), rgba(20, 30, 40, 0)), url('../assets/passion-bg.jpg');
-  height: 45vh; // Takes 45% of the viewport height
-  background-position: center 60%;
+  background-position: center 50%;
   background-repeat: no-repeat;
   background-size: cover;
+
+  height: 45vh; // Takes 45% of the viewport height
+  width: 100%;
+  position: fixed;
+  z-index: -1;
+}
+
+.page-header {
+  height: 35vh; // Takes 35% of the viewport height
 
   display: flex;
   justify-content: center;
   text-align: center;
   color: $white-bg;
-
-  pointer-events: none;
 }
+
+
 
 .hero-content {
   h1 {
@@ -38,9 +46,4 @@ body {
   max-width: 900px;
   margin: 0 auto;
   padding: $spacing-lg;
-
-  // Put the content up to slighly overlay the hero image
-  margin-top: -80px;
-  position: relative;
-  z-index: 10;
 }
