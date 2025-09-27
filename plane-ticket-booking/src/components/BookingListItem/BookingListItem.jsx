@@ -2,8 +2,13 @@ import './BookingListItem.scss';
 
 export default function BookingListItem({
     booking,
-    getAirportCodeById
+    getAirportCodeById,
+    onBookingDelete
 }) {
+    const handleDeleteBooking = (e) => {
+        e.stopPropagation();
+        onBookingDelete(booking.id);
+    }
     return (
         <div className="booking-list-item">
             <div className="booking-details">
@@ -13,7 +18,7 @@ export default function BookingListItem({
                 </p>
             </div>
             <div className="booking-actions">
-                <button className="delete-button">Delete</button>
+                <button className="delete-button" onClick={handleDeleteBooking}>Delete</button>
             </div>
         </div>
     );

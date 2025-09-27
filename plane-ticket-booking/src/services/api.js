@@ -42,6 +42,24 @@ const apiPost = async (endpoint, body) => {
     return response.json();
 };
 
+const apiDelete = async (endpoint) => {
+     if (!API_AUTH_TOKEN) {
+        console.error('Missing auth token.');
+        throw new Error('Missing Auth Token');
+    }
+
+    const deleteBookingUrl = `${API_BASE_URL}${endpoint}?authToken=${API_AUTH_TOKEN}`;
+    const response = await fetch(deleteBookingUrl, {
+        method: 'DELETE',
+    });
+
+    if (!response.ok) {
+        throw new Error(`API call failed: ${response.status}`)
+    }
+
+    return { success: true };
+};
+
 export const getAirports = () => {
     return apiFetch('/airports');
 };
@@ -57,3 +75,7 @@ export const getBookings = (pageIndex = 0, pageSize) => {
 export const createBooking = (bookingData) => {
     return apiPost('/bookings/create', bookingData);
 };
+
+export const deleteBooking = (bookingId) => {
+    return apiDelete(`/bookings/delete/${bookingId}`);
+}

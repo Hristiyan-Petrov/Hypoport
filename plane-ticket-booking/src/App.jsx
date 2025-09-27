@@ -2,7 +2,7 @@ import './styles/index.scss';
 import BookingForm from './components/BookingForm/BookingForm'
 import BookingList from './components/BookingList/BookingList';
 import { useEffect, useState } from 'react';
-import { createBooking, getAirports, getBookings } from './services/api';
+import { createBooking, deleteBooking, getAirports, getBookings } from './services/api';
 
 function App() {
     const [bookings, setBookings] = useState([]);
@@ -50,7 +50,22 @@ function App() {
 
         } catch (error) {
             console.error("Failed to create new booking:", error);
-            alert('Could not create booking. Please try again.');
+            alert('Could not create booking.');
+        }
+    };
+
+    const handleDeleteBooking = async (bookingId) => {
+        if (!window.confirm('Are you sure you want to delete this booking?')) {
+            return;
+        }
+
+        try {
+            await deleteBooking(bookingId);
+            setBookings(prevBookings => prevBookings.filter(x => x.id !== bookingId));
+            alert(`Booking ${bookingId} deleted.`);
+        } catch (error) {
+            console.error('Failed to delete booking:', error);
+            alert('Could not delete booking.');
         }
     };
 
@@ -76,6 +91,7 @@ function App() {
                     isLoading={isLoading}
                     error={error}
                     getAirportCodeById={getAirportCodeById}
+                    onBookingDelete={handleDeleteBooking}
                 />
             </main>
         </>
