@@ -13,7 +13,7 @@ body {
   background-repeat: no-repeat;
   background-size: cover;
 
-  height: 45vh; // Takes 45% of the viewport height
+  height: 35vh; // Takes 35% of the viewport height
   width: 100%;
   position: fixed;
   z-index: -1;
@@ -21,28 +21,33 @@ body {
 
 .page-header {
   height: 35vh; // Takes 35% of the viewport height
-
   display: flex;
   justify-content: center;
   text-align: center;
   color: $white-bg;
-}
 
 
-.hero-content {
-  h1 {
-    font-size: 3rem;
-    margin-bottom: $spacing-md;
-  }
+  .hero-content {
+    h1 {
+      font-size: 3rem;
+      margin-bottom: $spacing-md;
+    }
 
-  p {
-    font-size: 1.25rem;
-    opacity: 0.9;
+    p {
+      font-size: 1.25rem;
+      opacity: 0.9;
+    }
   }
 }
 
 .main-content {
   max-width: 900px;
   margin: 0 auto;
-  padding: $spacing-lg;
+
+  .bookings-loader {
+    text-align: center;
+    padding: $spacing-md;
+    color: $primary-color;
+    font-size: $spacing-lg;
+  }
 }

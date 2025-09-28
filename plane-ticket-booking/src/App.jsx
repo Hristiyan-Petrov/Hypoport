@@ -1,7 +1,7 @@
 import './styles/index.scss';
 import BookingForm from './components/BookingForm/BookingForm'
 import BookingList from './components/BookingList/BookingList';
-import { useEffect, useState } from 'react';
+import { use, useCallback, useEffect, useState } from 'react';
 import { createBooking, deleteBooking, getAirports, getBookings } from './services/api';
 import Modal from './components/Modal/Modal';
 
@@ -14,15 +14,29 @@ function App() {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [selectedBooking, setSelectedBooking] = useState(null);
 
+    const [nextPageToFetch, setNextPageToFetch] = useState(null);
+    const PAGE_SIZE = 5;
+    const [isFetchingMoreBookings, setIsFetchingMoreBookings] = useState(false);
+
+    // Initial data load
     useEffect(() => {
         const fetchInitialData = async () => {
             try {
                 setIsLoading(true);
-                const bookingsResponse = await getBookings(0);
-                const airportsResponse = await getAirports();
+                const discoveryResponse = await getBookings(0, 1);
+                const totalCount = Number(discoveryResponse.totalCount);
 
-                setBookings(bookingsResponse.list.toReversed());
+                const airportsResponse = await getAirports();
                 setAirports(airportsResponse);
+
+                if (totalCount > 0) {
+                    const lastPage = Math.ceil(totalCount / PAGE_SIZE) - 1;
+                    const lastPageResponse = await getBookings(lastPage);
+                    setBookings(lastPageResponse.list.toReversed());
+                    setNextPageToFetch(lastPage - 1);
+                } else {
+                    setBookings([]);
+                }
                 setError(null);
             } catch (error) {
                 console.error("Failed to fetch initial data:", error);
@@ -35,6 +49,40 @@ function App() {
 
         fetchInitialData();
     }, []);
+
+    // Update the function on dependency update
+    const handleScroll = useCallback(async () => {
+        const canFetchMore = !isFetchingMoreBookings && nextPageToFetch >= 0;
+        if (!canFetchMore) return;
+
+        // Check if we are within 100px to the bottom of the page 
+        // scrollTop - the already scrolled part
+        // clientHeight - the visible part of the screen
+        // scrollHeight - the total height of EVERYTHING visible and hidden up to the bottom of the visible screen area
+        const isNearBottom = document.documentElement.scrollTop + window.innerHeight >= document.documentElement.scrollHeight;
+
+        if (isNearBottom) {
+            setIsFetchingMoreBookings(true);
+
+            try {
+                const bookingsResponse = await getBookings(nextPageToFetch);
+                setBookings(prevBookings => [...prevBookings, ...bookingsResponse.list.toReversed()]);
+                setNextPageToFetch(currPage => currPage - 1);
+                console.log('Fetched more');
+            } catch (error) {
+                console.error("Failed to fetch more bookings:", error);
+            } finally {
+                setIsFetchingMoreBookings(false);
+            }
+        }
+    }, [isFetchingMoreBookings, nextPageToFetch, bookings]);
+
+    useEffect(() => {
+        window.addEventListener('scroll', handleScroll);
+        return () => {
+            window.removeEventListener('scroll', handleScroll);
+        }
+    }, [handleScroll]);
 
     const getAirportCodeById = (id) => {
         const airport = airports.find(x => x.id === id);
@@ -113,6 +161,7 @@ function App() {
                     onBookingDelete={handleDeleteBooking}
                     onViewBooking={handleOpenBookingModal}
                 />
+                {isFetchingMoreBookings && <p className='bookings-loader'>Loading more bookings...</p>}
             </main>
 
             <Modal
