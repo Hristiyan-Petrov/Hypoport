@@ -33,9 +33,9 @@ export default function Modal({
                         <p><strong>Passenger</strong></p>
                         <span className='booking-data-field'>{selectedBooking.firstName} {selectedBooking.lastName}</span>
                         <p><strong>Departure</strong></p>
-                        <span className='booking-data-field'>Aiport {getAirportTitleById(selectedBooking.departureAirportId)} on {formatData(selectedBooking.departureDate)}</span>
+                        <span className='booking-data-field'>{getAirportTitleById(selectedBooking.departureAirportId)} on {formatData(selectedBooking.departureDate)}</span>
                         <p><strong>Arrival</strong></p>
-                        <span className='booking-data-field'>Airport {getAirportTitleById(selectedBooking.arrivalAirportId)} on {formatData(selectedBooking.returnDate)}</span>
+                        <span className='booking-data-field'>{getAirportTitleById(selectedBooking.arrivalAirportId)} on {formatData(selectedBooking.returnDate)}</span>
                     </div>
                 )}
             </div>

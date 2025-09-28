@@ -11,7 +11,7 @@ export default function BookingList({
 }) {
     return (
         <section className="booking-list-container">
-            <h2>Existing Bookings</h2>
+            <h2>Current Bookings</h2>
 
             {isLoading && <p>Loading bookings...</p>}
             {error && <p className="error-message">{error}</p>}
