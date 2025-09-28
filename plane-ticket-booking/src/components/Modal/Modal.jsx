@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import './Modal.scss';
 
 export default function Modal({
@@ -6,6 +7,17 @@ export default function Modal({
     selectedBooking,
     getAirportTitleById
 }) {
+    useEffect(() => {
+        const handleKeyDown = (e) => {
+            if (e.key === 'Escape') {
+                onClose();
+            }
+        }
+
+        if (isOpen) document.addEventListener('keydown', handleKeyDown);
+        return () => document.removeEventListener('keydown', handleKeyDown);
+    }, [isOpen, onClose]);
+
     if (!isOpen || !selectedBooking) return null;
 
     const formatData = (dateString) => {
