@@ -52,6 +52,17 @@
         .booking-data-field {
             color: $primary-color;
             font-weight: 600;
+            overflow-wrap: break-word;
+            word-wrap: break-word; 
+        }
+    }
+}
+
+@media (max-width: 768px) {
+    .modal-container {
+        
+        .modal-content {
+            max-width: 50%;
         }
     }
 }

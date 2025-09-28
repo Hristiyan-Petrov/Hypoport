@@ -40,3 +40,10 @@
     }
 
 }
+
+@media (max-width: 768px) {
+    .booking-list-header {
+        flex-direction: column;
+        gap: $spacing-lg;
+    }
+}

@@ -14,8 +14,15 @@ export default function Modal({
             }
         }
 
-        if (isOpen) document.addEventListener('keydown', handleKeyDown);
-        return () => document.removeEventListener('keydown', handleKeyDown);
+        if (isOpen) {
+            document.addEventListener('keydown', handleKeyDown);
+            document.body.style.overflow = 'hidden';
+        }
+
+        return () => {
+            document.removeEventListener('keydown', handleKeyDown);
+            document.body.style.overflow = 'unset';
+        }
     }, [isOpen, onClose]);
 
     if (!isOpen || !selectedBooking) return null;

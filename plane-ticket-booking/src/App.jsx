@@ -74,7 +74,7 @@ function App() {
         // scrollTop - the already scrolled part
         // clientHeight - the visible part of the screen
         // scrollHeight - the total height of EVERYTHING visible and hidden up to the bottom of the visible screen area
-        const isNearBottom = document.documentElement.scrollTop + window.innerHeight >= document.documentElement.scrollHeight;
+        const isNearBottom = document.documentElement.scrollTop + window.innerHeight >= document.documentElement.scrollHeight - 10;
 
         if (isNearBottom) {
             setPageIndex(prev => prev + 1);
