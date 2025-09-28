@@ -1,7 +1,7 @@
 import './styles/index.scss';
 import BookingForm from './components/BookingForm/BookingForm'
 import BookingList from './components/BookingList/BookingList';
-import { use, useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { createBooking, deleteBooking, getAirports, getBookings } from './services/api';
 import Modal from './components/Modal/Modal';
 
@@ -11,48 +11,63 @@ function App() {
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState(null);
 
+    const [pageIndex, setPageIndex] = useState(0);
+    const [totalBookings, setTotalBookings] = useState(0);
+    const [isFetchingMoreBookings, setIsFetchingMoreBookings] = useState(false);
+    const [isInitialLoad, setIsInitialLoad] = useState(true);
+
+    const PAGE_SIZE = 5;
+
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [selectedBooking, setSelectedBooking] = useState(null);
 
-    const [nextPageToFetch, setNextPageToFetch] = useState(null);
-    const PAGE_SIZE = 5;
-    const [isFetchingMoreBookings, setIsFetchingMoreBookings] = useState(false);
 
-    // Initial data load
     useEffect(() => {
-        const fetchInitialData = async () => {
+        let isActive = true; // Flag to track if the component is still interested in this fetch
+
+        const fetchData = async () => {
+            if (isInitialLoad) setIsLoading(true);
+            else setIsFetchingMoreBookings(true);
+
             try {
-                setIsLoading(true);
-                const discoveryResponse = await getBookings(0, 1);
-                const totalCount = Number(discoveryResponse.totalCount);
+                const bookingsResponse = await getBookings(pageIndex);
 
-                const airportsResponse = await getAirports();
-                setAirports(airportsResponse);
+                if (isActive) {
 
-                if (totalCount > 0) {
-                    const lastPage = Math.ceil(totalCount / PAGE_SIZE) - 1;
-                    const lastPageResponse = await getBookings(lastPage);
-                    setBookings(lastPageResponse.list.toReversed());
-                    setNextPageToFetch(lastPage - 1);
-                } else {
-                    setBookings([]);
+                    if (isInitialLoad) {
+                        const airportsResponse = await getAirports();
+                        setAirports(airportsResponse);
+                    }
+
+                    setBookings(prev => pageIndex === 0 ? bookingsResponse.list : [...prev, ...bookingsResponse.list]);
+                    setTotalBookings(Number(bookingsResponse.totalCount));
+
+                    setError(null);
                 }
-                setError(null);
             } catch (error) {
                 console.error("Failed to fetch initial data:", error);
-                console.error(error);
-                setError('Could not load data from the server.')
+                if (isActive) {
+                    setError('Could not load data from the server.')
+                }
             } finally {
-                setIsLoading(false);
+                if (isActive) {
+                    if (isInitialLoad) setIsLoading(false);
+                    else setIsFetchingMoreBookings(false);
+                    setIsInitialLoad(false);
+                }
             }
         };
 
-        fetchInitialData();
-    }, []);
+        fetchData();
+
+        return () => {
+            isActive = false;
+        }
+    }, [pageIndex]);
 
     // Update the function on dependency update
     const handleScroll = useCallback(async () => {
-        const canFetchMore = !isFetchingMoreBookings && nextPageToFetch >= 0;
+        const canFetchMore = !isLoading && !isFetchingMoreBookings && bookings.length < totalBookings;
         if (!canFetchMore) return;
 
         // Check if we are within 100px to the bottom of the page 
@@ -62,20 +77,11 @@ function App() {
         const isNearBottom = document.documentElement.scrollTop + window.innerHeight >= document.documentElement.scrollHeight;
 
         if (isNearBottom) {
-            setIsFetchingMoreBookings(true);
-
-            try {
-                const bookingsResponse = await getBookings(nextPageToFetch);
-                setBookings(prevBookings => [...prevBookings, ...bookingsResponse.list.toReversed()]);
-                setNextPageToFetch(currPage => currPage - 1);
-                console.log('Fetched more');
-            } catch (error) {
-                console.error("Failed to fetch more bookings:", error);
-            } finally {
-                setIsFetchingMoreBookings(false);
-            }
+            setPageIndex(prev => prev + 1);
         }
-    }, [isFetchingMoreBookings, nextPageToFetch, bookings]);
+    }, [isLoading, isFetchingMoreBookings, bookings.length, totalBookings]);
+
+
 
     useEffect(() => {
         window.addEventListener('scroll', handleScroll);
@@ -102,9 +108,13 @@ function App() {
                 arrivalAirportId: Number(formData.arrivalAirportId),
             }
             const newBooking = await createBooking(parsedData);
-            setBookings(prevBookings => [newBooking, ...prevBookings]);
-            alert('You sucessfully created a booking!');
+            alert('You sucessfully created a booking! You can find it at the bottom of the list.');
+            setTotalBookings(prev => prev + 1);
 
+            const currentCapacity = (pageIndex + 1) * PAGE_SIZE;
+            if (bookings.length < currentCapacity) {
+                setBookings(prev => [...prev, newBooking]);
+            }
         } catch (error) {
             console.error("Failed to create new booking:", error);
             alert('Could not create booking.');
@@ -112,13 +122,27 @@ function App() {
     };
 
     const handleDeleteBooking = async (bookingId) => {
-        if (!window.confirm('Are you sure you want to delete this booking?')) {
-            return;
-        }
+        if (!window.confirm('Are you sure you want to delete this booking?')) return;
 
         try {
             await deleteBooking(bookingId);
+            const currentBookingCount = bookings.length - 1;
             setBookings(prevBookings => prevBookings.filter(x => x.id !== bookingId));
+            const newTotal = totalBookings - 1;
+            setTotalBookings(newTotal);
+
+            if (currentBookingCount < newTotal) {
+                const pageToFetch = Math.floor(currentBookingCount / PAGE_SIZE);
+                const itemIndexOnPage = currentBookingCount % PAGE_SIZE;
+                const response = await getBookings(pageToFetch);
+
+                if (response.list.length > itemIndexOnPage) {
+                    const newItem = response.list[itemIndexOnPage];
+
+                    setBookings(prev => [...prev, newItem]);
+                }
+            }
+
             alert(`Booking ${bookingId} deleted.`);
         } catch (error) {
             console.error('Failed to delete booking:', error);
@@ -160,8 +184,9 @@ function App() {
                     getAirportCodeById={getAirportCodeById}
                     onBookingDelete={handleDeleteBooking}
                     onViewBooking={handleOpenBookingModal}
+                    totalBookings={totalBookings}
                 />
-                {isFetchingMoreBookings && <p className='bookings-loader'>Loading more bookings...</p>}
+                {isFetchingMoreBookings && <p className='bookings-loader'>Loading...</p>}
             </main>
 
             <Modal
