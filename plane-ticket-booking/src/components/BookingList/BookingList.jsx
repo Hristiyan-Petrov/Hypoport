@@ -6,7 +6,8 @@ export default function BookingList({
     isLoading,
     error,
     getAirportCodeById,
-    onBookingDelete
+    onBookingDelete,
+    onViewBooking
 }) {
     return (
         <section className="booking-list-container">
@@ -24,6 +25,7 @@ export default function BookingList({
                                 booking={booking}
                                 getAirportCodeById={getAirportCodeById}
                                 onBookingDelete={onBookingDelete}
+                                onViewBooking={onViewBooking}
                             />
                         ))}
                     </div>

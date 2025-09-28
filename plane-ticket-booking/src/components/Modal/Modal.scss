@@ -1,0 +1,57 @@
+@use '../../styles/variables.scss' as *;
+
+.modal-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(10, 20, 30, 0.7);
+    backdrop-filter: blur(5px);
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    // z-index: 1000;
+
+    .modal-content {
+        background-color: $white-bg;
+        padding: $spacing-lg;
+        border: 3px solid $primary-color;
+        border-radius: $border-radius;
+        min-width: 50%;
+        max-width: 500px;
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: $spacing-lg;
+
+            .modal-close-button {
+                background: none;
+                border: 1px solid $red;
+                border-radius: $border-radius;
+                color: $red;
+                transition: all 0.2s;
+                padding: 0 $spacing-sm;
+                font-size: 2rem;
+
+                &:hover {
+                    color: $dark-text;
+                    background-color: $red;
+                    cursor: pointer;
+                }
+            }
+
+            h2 {
+                text-align: center;
+            }
+        }
+
+        .booking-data-field {
+            color: $primary-color;
+            font-weight: 600;
+        }
+    }
+}

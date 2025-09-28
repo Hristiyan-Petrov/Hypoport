@@ -3,12 +3,16 @@ import BookingForm from './components/BookingForm/BookingForm'
 import BookingList from './components/BookingList/BookingList';
 import { useEffect, useState } from 'react';
 import { createBooking, deleteBooking, getAirports, getBookings } from './services/api';
+import Modal from './components/Modal/Modal';
 
 function App() {
     const [bookings, setBookings] = useState([]);
     const [airports, setAirports] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState(null);
+
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [selectedBooking, setSelectedBooking] = useState(null);
 
     useEffect(() => {
         const fetchInitialData = async () => {
@@ -35,6 +39,11 @@ function App() {
     const getAirportCodeById = (id) => {
         const airport = airports.find(x => x.id === id);
         return airport ? airport.code : 'N/A';
+    };
+
+    const getAirportTitleById = (id) => {
+        const airport = airports.find(x => x.id === id);
+        return airport ? airport.title : 'N/A';
     };
 
     const handleBookingFormSubmit = async (formData) => {
@@ -69,6 +78,16 @@ function App() {
         }
     };
 
+    const handleOpenBookingModal = (booking) => {
+        setSelectedBooking(booking);
+        setIsModalOpen(true);
+    };
+
+    const handleCloseModal = () => {
+        setSelectedBooking(null);
+        setIsModalOpen(false);
+    };
+
     return (
         <>
             {/* Holds background image */}
@@ -92,8 +111,16 @@ function App() {
                     error={error}
                     getAirportCodeById={getAirportCodeById}
                     onBookingDelete={handleDeleteBooking}
+                    onViewBooking={handleOpenBookingModal}
                 />
             </main>
+
+            <Modal
+                isOpen={isModalOpen}
+                onClose={handleCloseModal}
+                selectedBooking={selectedBooking}
+                getAirportTitleById={getAirportTitleById}
+            />
         </>
     )
 }
