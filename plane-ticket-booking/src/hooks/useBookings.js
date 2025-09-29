@@ -84,7 +84,6 @@ export const useBookings = () => {
 
     const addBooking = async (formData) => {
         const newBooking = await createBooking(formData);
-        alert('You sucessfully created a booking! You can find it at the bottom of the list.');
         setTotalBookings(prev => prev + 1);
 
         const currentCapacity = (pageIndex + 1) * PAGE_SIZE;
@@ -110,7 +109,6 @@ export const useBookings = () => {
                 setBookings(prev => [...prev, newItem]);
             }
         }
-        alert(`Booking ${bookingId} deleted.`);
     };
 
 

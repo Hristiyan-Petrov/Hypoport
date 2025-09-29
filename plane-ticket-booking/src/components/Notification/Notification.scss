@@ -1,0 +1,49 @@
+@use '../../styles/variables' as *;
+@use '../../styles/animations';
+
+
+.notification {
+    position: fixed;
+    top: 60px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 10;
+
+    min-width: 300px;
+    padding: $spacing-md;
+    border-radius: $border-radius;
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    animation: slideInDownNotification 0.5s;
+
+    .message {
+        color: $white-bg;
+        margin: 0;
+        font-weight: 500;
+    }
+
+    .close-button {
+        background: none;
+        border: none;
+        color: $white-bg;
+        font-size: 1.5rem;
+        cursor: pointer;
+        padding: 0;
+        transition: all 0.1s;
+
+        &:hover {
+            transform: scale(1.1);
+        }
+    }
+
+    &-success {
+        background-color: $green;
+    }
+
+    &-error {
+        background-color: $red;
+    }
+
+}

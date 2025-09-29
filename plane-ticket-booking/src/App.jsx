@@ -1,11 +1,11 @@
 import './styles/index.scss';
 import BookingForm from './components/BookingForm/BookingForm'
 import BookingList from './components/BookingList/BookingList';
-import { useCallback, useEffect, useState } from 'react';
-import { createBooking, deleteBooking, getAirports, getBookings } from './services/api';
+import { useState } from 'react';
 import Modal from './components/Modal/Modal';
 import { useModal } from './hooks/useModal';
 import { useBookings } from './hooks/useBookings';
+import Notification from './components/Notification/Notification';
 
 function App() {
 
@@ -25,6 +25,16 @@ function App() {
     const { isOpen: isModalOpen, openModal, closeModal } = useModal();
     const [selectedBooking, setSelectedBooking] = useState(null);
 
+    const [notification, setNotification] = useState({
+        message: '',
+        type: '',
+        visible: false
+    });
+
+    const showNotification = (message, type) => {
+        setNotification({ message, type, visible: true });
+    };
+
     const handleBookingFormSubmit = async (formData) => {
         try {
             const parsedData = {
@@ -33,9 +43,10 @@ function App() {
                 arrivalAirportId: Number(formData.arrivalAirportId),
             }
             await addBooking(parsedData);
+            showNotification('You sucessfully created a booking! You can find it at the bottom of the list.', 'success');
         } catch (error) {
             console.error("Failed to create new booking:", error);
-            alert('Could not create booking.');
+            showNotification('Could not create booking.', 'error');
         }
     };
 
@@ -44,9 +55,10 @@ function App() {
 
         try {
             await removeBooking(bookingId);
+            showNotification(`Booking ${bookingId} deleted.`, 'success');
         } catch (error) {
             console.error('Failed to delete booking:', error);
-            alert('Could not delete booking.');
+            showNotification(`Could not delete booking.`, 'error');
         }
     };
 
@@ -62,6 +74,12 @@ function App() {
 
     return (
         <>
+            <Notification
+                message={notification.message}
+                type={notification.type}
+                visible={notification.visible}
+                onClose={() => setNotification({...notification, visible: false})}
+            />
             {/* Holds background image */}
             <div className="bg-hero"></div>
 
