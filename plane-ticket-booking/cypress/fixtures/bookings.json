@@ -1,0 +1,10 @@
+[
+  {
+    "id": "12345",
+    "firstName": "John",
+    "lastName": "Doe",
+    "departureAirport": "SOF",
+    "arrivalAirport": "JFK",
+    "departureDate": "2025-12-01"
+  }
+]
