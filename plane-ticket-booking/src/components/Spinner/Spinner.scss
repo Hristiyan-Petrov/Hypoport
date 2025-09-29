@@ -1,0 +1,13 @@
+@use '../../styles/animations';
+@use '../../styles/variables' as *;
+
+.spinner {
+    
+    // display: inline-block;
+    width: 1rem;
+    height: 1rem;
+    border: 2px solid $white-bg;
+    border-radius: 50%;
+    border-top-color: $dark-text; // The moving part of the spinner
+    animation: spinner 0.9s linear infinite;
+}

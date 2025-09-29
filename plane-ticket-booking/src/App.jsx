@@ -6,6 +6,7 @@ import Modal from './components/Modal/Modal';
 import { useModal } from './hooks/useModal';
 import { useBookings } from './hooks/useBookings';
 import Notification from './components/Notification/Notification';
+import Spinner from './components/Spinner/Spinner';
 
 function App() {
 
@@ -14,6 +15,8 @@ function App() {
         airports,
         isLoading,
         error,
+        isCreating,
+        isDeletingId,
         totalBookings,
         isFetchingMoreBookings,
         addBooking,
@@ -78,7 +81,7 @@ function App() {
                 message={notification.message}
                 type={notification.type}
                 visible={notification.visible}
-                onClose={() => setNotification({...notification, visible: false})}
+                onClose={() => setNotification({ ...notification, visible: false })}
             />
             {/* Holds background image */}
             <div className="bg-hero"></div>
@@ -94,6 +97,7 @@ function App() {
                 <BookingForm
                     airports={airports}
                     onBookingFormSubmit={handleBookingFormSubmit}
+                    isCreating={isCreating}
                 />
                 <BookingList
                     bookings={bookings}
@@ -103,8 +107,16 @@ function App() {
                     onBookingDelete={handleDeleteBooking}
                     onViewBooking={handleOpenBookingModal}
                     totalBookings={totalBookings}
+                    isDeletingId={isDeletingId}
                 />
-                {isFetchingMoreBookings && <p className='bookings-loader'>Loading...</p>}
+                {isFetchingMoreBookings &&
+                    (
+                        <div className="bookings-loader">
+                            <p>Loading more bookings</p>
+                            <Spinner />
+                        </div>
+                    )
+                }
             </main>
 
             <Modal

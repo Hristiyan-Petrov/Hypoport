@@ -1,10 +1,12 @@
 import { useState } from 'react';
 import './BookingForm.scss';
 import { validateBookingForm } from '../../utils/validators';
+import Spinner from '../Spinner/Spinner';
 
 export default function BookingForm({
     airports,
-    onBookingFormSubmit
+    onBookingFormSubmit,
+    isCreating
 }) {
     const [formData, setFormData] = useState({
         firstName: '',
@@ -147,8 +149,8 @@ export default function BookingForm({
                     </div>
                 </div>
 
-                <button type='submit' className="submit-form-button">
-                    Book Ticket
+                <button type='submit' className="submit-form-button" disabled={isCreating}>
+                    {isCreating ? <Spinner/> : 'Book Ticket'}
                 </button>
             </form>
         </section>

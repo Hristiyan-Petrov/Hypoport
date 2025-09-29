@@ -1,4 +1,5 @@
 import BookingListItem from '../BookingListItem/BookingListItem';
+import Spinner from '../Spinner/Spinner';
 import './BookingList.scss';
 
 export default function BookingList({
@@ -8,28 +9,38 @@ export default function BookingList({
     getAirportCodeById,
     onBookingDelete,
     onViewBooking,
-    totalBookings
+    totalBookings,
+    isDeletingId
 }) {
     return (
         <section className="booking-list-container">
-            <div className="booking-list-header">
-                <h2>Current Bookings Showed: {bookings.length}</h2>
-                <div className="page-size-selector">
-                    <div className="total-bookings">Total bookings: {totalBookings}</div>
-                    {/* <label htmlFor="pageSize">Show:</label>
+            {!isLoading && (
+                <div className="booking-list-header">
+                    <h2>Current Bookings Showed: {bookings.length}</h2>
+                    <div className="page-size-selector">
+                        <div className="total-bookings">Total bookings: {totalBookings}</div>
+                        {/* <label htmlFor="pageSize">Show:</label>
                     <select
-                        id='pageSize'
-                        value={pageSize}
-                        onChange={(e) => onPageSizeChange(Number(e.target.value))}
+                    id='pageSize'
+                    value={pageSize}
+                    onChange={(e) => onPageSizeChange(Number(e.target.value))}
                     >
-                        <option value={5}>5</option>
-                        <option value={10}>10</option>
-                        <option value={20}>20</option>
+                    <option value={5}>5</option>
+                    <option value={10}>10</option>
+                    <option value={20}>20</option>
                     </select> */}
+                    </div>
                 </div>
-            </div>
+            )}
 
-            {isLoading && <p>Loading bookings...</p>}
+            {isLoading &&
+                (
+                    <div className="bookings-loader">
+                        <p>Loading Bookings</p>
+                        <Spinner />
+                    </div>
+                )
+            }
             {error && <p className="error-message">{error}</p>}
 
             {!isLoading && !error && bookings && bookings.length > 0
@@ -42,6 +53,7 @@ export default function BookingList({
                                 getAirportCodeById={getAirportCodeById}
                                 onBookingDelete={onBookingDelete}
                                 onViewBooking={onViewBooking}
+                                isDeletingId={isDeletingId}
                             />
                         ))}
                     </div>

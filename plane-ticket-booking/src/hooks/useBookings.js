@@ -8,6 +8,8 @@ export const useBookings = () => {
     const [airports, setAirports] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState(null);
+    const [isCreating, setIsCreating] = useState(false);
+    const [isDeletingId, setIsDeletingId] = useState(false);
 
     const [pageIndex, setPageIndex] = useState(0);
     const [totalBookings, setTotalBookings] = useState(0);
@@ -83,31 +85,42 @@ export const useBookings = () => {
     }, [handleScroll]);
 
     const addBooking = async (formData) => {
-        const newBooking = await createBooking(formData);
-        setTotalBookings(prev => prev + 1);
+        setIsCreating(true);
+        try {
+            const newBooking = await createBooking(formData);
+            setTotalBookings(prev => prev + 1);
 
-        const currentCapacity = (pageIndex + 1) * PAGE_SIZE;
-        if (bookings.length < currentCapacity) {
-            setBookings(prev => [...prev, newBooking]);
+            const currentCapacity = (pageIndex + 1) * PAGE_SIZE;
+            if (bookings.length < currentCapacity) {
+                setBookings(prev => [...prev, newBooking]);
+            }
+        } finally {
+            setIsCreating(false);
         }
     };
 
     const removeBooking = async (bookingId) => {
-        await deleteBooking(bookingId);
-        const currentBookingCount = bookings.length - 1;
-        setBookings(prevBookings => prevBookings.filter(x => x.id !== bookingId));
-        const newTotal = totalBookings - 1;
-        setTotalBookings(newTotal);
+        setIsDeletingId(bookingId);
+        try {
 
-        if (currentBookingCount < newTotal) {
-            const pageToFetch = Math.floor(currentBookingCount / PAGE_SIZE);
-            const itemIndexOnPage = currentBookingCount % PAGE_SIZE;
-            const response = await getBookings(pageToFetch);
+            await deleteBooking(bookingId);
+            const currentBookingCount = bookings.length - 1;
+            setBookings(prevBookings => prevBookings.filter(x => x.id !== bookingId));
+            const newTotal = totalBookings - 1;
+            setTotalBookings(newTotal);
 
-            if (response.list.length > itemIndexOnPage) {
-                const newItem = response.list[itemIndexOnPage];
-                setBookings(prev => [...prev, newItem]);
+            if (currentBookingCount < newTotal) {
+                const pageToFetch = Math.floor(currentBookingCount / PAGE_SIZE);
+                const itemIndexOnPage = currentBookingCount % PAGE_SIZE;
+                const response = await getBookings(pageToFetch);
+
+                if (response.list.length > itemIndexOnPage) {
+                    const newItem = response.list[itemIndexOnPage];
+                    setBookings(prev => [...prev, newItem]);
+                }
             }
+        } finally {
+            setIsDeletingId(false);
         }
     };
 
@@ -128,6 +141,8 @@ export const useBookings = () => {
         airports,
         isLoading,
         error,
+        isCreating,
+        isDeletingId,
         totalBookings,
         isFetchingMoreBookings,
         addBooking,

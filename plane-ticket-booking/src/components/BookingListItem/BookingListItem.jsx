@@ -1,15 +1,20 @@
+import Spinner from '../Spinner/Spinner';
 import './BookingListItem.scss';
 
 export default function BookingListItem({
     booking,
     getAirportCodeById,
     onBookingDelete,
-    onViewBooking
+    onViewBooking,
+    isDeletingId
 }) {
     const handleDeleteBooking = (e) => {
         e.stopPropagation();
         onBookingDelete(booking.id);
-    }
+    };
+
+    const isDeleting = isDeletingId === booking.id;
+    
     return (
         <div className="booking-list-item" onClick={() => onViewBooking(booking)}>
             <div className="booking-details">
@@ -19,7 +24,9 @@ export default function BookingListItem({
                 </p>
             </div>
             <div className="booking-actions">
-                <button className="delete-button" onClick={handleDeleteBooking}>Delete</button>
+                <button className="delete-button" onClick={handleDeleteBooking} disabled={isDeleting}>
+                    {isDeleting ? <Spinner/> : 'Delete'}
+                    </button>
             </div>
         </div>
     );
