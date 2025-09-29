@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { createBooking, deleteBooking, getAirports, getBookings } from "../services/api";
 
 const PAGE_SIZE = 5;
@@ -15,6 +15,8 @@ export const useBookings = () => {
     const [totalBookings, setTotalBookings] = useState(0);
     const [isFetchingMoreBookings, setIsFetchingMoreBookings] = useState(false);
     const [isInitialLoad, setIsInitialLoad] = useState(true);
+
+    const debounceTimer = useRef(null);
 
     // Data fetcher
     useEffect(() => {
@@ -63,24 +65,34 @@ export const useBookings = () => {
 
     // Update the function on dependency update
     const handleScroll = useCallback(async () => {
-        const canFetchMore = !isLoading && !isFetchingMoreBookings && bookings.length < totalBookings;
-        if (!canFetchMore) return;
-
-        // Check if we are within 100px to the bottom of the page 
-        // scrollTop - the already scrolled part
-        // clientHeight - the visible part of the screen
-        // scrollHeight - the total height of EVERYTHING visible and hidden up to the bottom of the visible screen area
-        const isNearBottom = document.documentElement.scrollTop + window.innerHeight >= document.documentElement.scrollHeight - 10;
-
-        if (isNearBottom) {
-            setPageIndex(prev => prev + 1);
+        if (debounceTimer.current) {
+            clearTimeout(debounceTimer.current)
         }
+
+        debounceTimer.current = setTimeout(() => {
+            const canFetchMore = !isLoading && !isFetchingMoreBookings && bookings.length < totalBookings;
+            if (!canFetchMore) return;
+
+            // Check if we are within 100px to the bottom of the page 
+            // scrollTop - the already scrolled part
+            // clientHeight - the visible part of the screen
+            // scrollHeight - the total height of EVERYTHING visible and hidden up to the bottom of the visible screen area
+            const isAtBottom = document.documentElement.scrollTop + window.innerHeight >= document.documentElement.scrollHeight - 10;
+
+            if (isAtBottom) {
+                setPageIndex(prev => prev + 1);
+            }
+
+        }, 150);
     }, [isLoading, isFetchingMoreBookings, bookings.length, totalBookings]);
 
     useEffect(() => {
         window.addEventListener('scroll', handleScroll);
         return () => {
             window.removeEventListener('scroll', handleScroll);
+            if (debounceTimer.current) {
+                clearTimeout(debounceTimer.current);
+            }
         }
     }, [handleScroll]);
 
