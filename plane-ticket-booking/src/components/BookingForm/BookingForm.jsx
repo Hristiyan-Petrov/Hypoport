@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import './BookingForm.scss';
 import { validateBookingForm } from '../../utils/validators';
 import Spinner from '../Spinner/Spinner';
@@ -17,6 +17,9 @@ export default function BookingForm({
         returnDate: '',
     });
     const [errors, setErrors] = useState({});
+
+    const departureDateRef = useRef(null);
+    const arrivalDateRef = useRef(null);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -97,8 +100,8 @@ export default function BookingForm({
                                 </option>
                             ))}
                         </select>
-                            {errors.departureAirportId &&
-                                <span className="error-text">{errors.departureAirportId}</span>}
+                        {errors.departureAirportId &&
+                            <span className="error-text">{errors.departureAirportId}</span>}
                     </div>
                     {/* Arrival Airport */}
                     <div className="form-group">
@@ -116,8 +119,8 @@ export default function BookingForm({
                                 </option>
                             ))}
                         </select>
-                            {errors.arrivalAirportId &&
-                                <span className="error-text">{errors.arrivalAirportId}</span>}
+                        {errors.arrivalAirportId &&
+                            <span className="error-text">{errors.arrivalAirportId}</span>}
                     </div>
                 </div>
                 {/* Date of departure */}
@@ -130,6 +133,8 @@ export default function BookingForm({
                             name='departureDate'
                             value={formData.departureDate}
                             onChange={handleChange}
+                            ref={departureDateRef}
+                            onClick={() => departureDateRef.current.focus()}
                         />
                         {errors.departureDate &&
                             <span className="error-text">{errors.departureDate}</span>}
@@ -143,6 +148,8 @@ export default function BookingForm({
                             name='returnDate'
                             value={formData.returnDate}
                             onChange={handleChange}
+                            ref={arrivalDateRef}
+                            onClick={() => arrivalDateRef.current.focus()}
                         />
                         {errors.returnDate &&
                             <span className="error-text">{errors.returnDate}</span>}
@@ -150,7 +157,7 @@ export default function BookingForm({
                 </div>
 
                 <button type='submit' className="submit-form-button" disabled={isCreating}>
-                    {isCreating ? <Spinner/> : 'Book Ticket'}
+                    {isCreating ? <Spinner /> : 'Book Ticket'}
                 </button>
             </form>
         </section>

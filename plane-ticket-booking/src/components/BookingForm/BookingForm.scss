@@ -1,82 +1,116 @@
-@use '../../styles/variables' as variables;
+@use '../../styles/variables' as v;
 
 .booking-form-container {
-    background-color: variables.$white-bg;
-    border-radius: variables.$border-radius;
-    margin-bottom: variables.$spacing-lg;
-    padding: variables.$spacing-lg;
+    background-color: v.$white-bg;
+    border-radius: v.$border-radius;
+    margin-bottom: v.$spacing-lg;
+    padding: v.$spacing-lg;
 
     h2 {
         margin-top: 0;
         text-align: center;
-        color: variables.$dark-text;
+        color: v.$dark-text;
+        margin-bottom: 2rem;
     }
 }
 
 .booking-form {
     display: flex;
     flex-direction: column;
-    gap: variables.$spacing-lg;
+    gap: 1.5rem;
 }
 
 .form-row {
     display: flex;
-    gap: 5rem;
+    gap: 1.5rem;
 }
 
 .form-group {
     display: flex;
     flex-direction: column;
     flex: 1;
+    position: relative; // Need for the date picker fix
 
     label {
         font-weight: 600;
-        color: variables.$medium-text;
-        margin-bottom: variables.$spacing-sm;
+        color: v.$medium-text;
+        margin-bottom: v.$spacing-sm;
+        font-size: 0.9rem;
     }
 
     input, select {
-        padding: variables.$spacing-sm;
-        border: 1px solid variables.$border-color;
-        border-radius: variables.$border-radius;
-        transition: all 0.2s;
+        padding: 0.8rem 1rem;
+        border: 1px solid v.$border-color;
+        border-radius: v.$border-radius;
+        font-size: 1rem;
+        font-family: inherit;
+        transition: all 0.2s ease-in-out;
+        background-color: v.$white-bg;
     
         &:focus {
             outline: none;
-            border-color: variables.$primary-color;
+            border-color: v.$primary-color;
             transform: translateY(-2px);
         }
     }
 
     .error-text {
-        color: variables.$red;
-        margin-top: variables.$spacing-sm;
+        color: v.$red;
+        margin-top: 0.25rem;
+        font-size: 0.8rem;
     }
 }
 
 .submit-form-button {
     max-width: fit-content;
-    margin: 0 auto;
-    padding: 1rem;
+    margin: 1rem auto 0;
+    padding: 1rem 2rem;
     border: none;
-    border-radius: variables.$border-radius;
-    background-color: variables.$primary-color;
-    color: variables.$white-bg;
-    font-size: 1rem;
+    border-radius: v.$border-radius;
+    background-color: v.$primary-color;
+    color: v.$white-bg;
+    font-size: 1.1rem;
     font-weight: 700;
     cursor: pointer;
     transition: all 0.2s;
-    margin-top: variables.$spacing-lg;
 
     &:hover {
-        background-color: variables.$primary-hover-color;
-    transform: translateY(-2px);
+        background-color: v.$primary-hover-color;
+        transform: translateY(-2px);
+    }
+
+    &:disabled {
+        background-color: v.$medium-text;
+        cursor: not-allowed;
+        transform: none;
     }
 }
 
 @media (max-width: 768px) {
     .form-row {
         flex-direction: column;
-        gap: variables.$spacing-lg;
+        gap: 1.5rem;
     }
+}
+
+//  FIX FOR DATE PICKER CLICK AREA
+
+// This pseudo-element targets the browser's built-in calendar icon
+// for webkit-based browsers (Chrome, Safari, Edge, etc.)
+input[type="date"]::-webkit-calendar-picker-indicator {
+    // Position it absolutely relative to the form-group
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    
+    // Make its clickable area cover the entire input field
+    width: 100%;
+    height: 100%;
+    
+    // Make the actual icon graphic invisible
+    color: transparent;
+    background: transparent;
+    cursor: pointer;
 }
