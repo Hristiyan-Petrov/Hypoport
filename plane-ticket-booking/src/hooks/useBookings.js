@@ -82,9 +82,6 @@ export const useBookings = () => {
         }
     }, [handleScroll]);
 
-
-
-
     const addBooking = async (formData) => {
         const newBooking = await createBooking(formData);
         alert('You sucessfully created a booking! You can find it at the bottom of the list.');
