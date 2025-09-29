@@ -54,7 +54,7 @@ export default function BookingForm({
         <section className="booking-form-container">
             <h2>Book a Flight</h2>
 
-            <form action="/" id='booking' className='booking-form' onSubmit={handleSubmit}>
+            <form id='booking' className='booking-form' onSubmit={handleSubmit}>
                 {/* First name */}
                 <div className="form-row">
                     <div className="form-group">
