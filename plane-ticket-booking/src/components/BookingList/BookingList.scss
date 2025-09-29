@@ -22,8 +22,6 @@
             align-items: center;
             gap: $spacing-sm;
 
-            label {}
-
             select {
                 padding: $spacing-sm;
                 font-size: 1rem;
@@ -39,7 +37,34 @@
         }
     }
 
+
+    .booking-list-end {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .scroll-top-top-button {
+        max-width: fit-content;
+        margin: 0 auto;
+        padding: 1rem;
+        border: none;
+        border-radius: $border-radius;
+        background-color: $primary-color;
+        color: $white-bg;
+        font-size: 1rem;
+        font-weight: 700;
+        cursor: pointer;
+        transition: all 0.2s;
+        margin-top: $spacing-lg;
+
+        &:hover {
+            background-color: $primary-hover-color;
+            transform: translateY(-2px);
+        }
+    }
 }
+
 
 @media (max-width: 768px) {
     .booking-list-header {

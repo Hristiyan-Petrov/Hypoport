@@ -2,6 +2,16 @@ import BookingListItem from '../BookingListItem/BookingListItem';
 import Spinner from '../Spinner/Spinner';
 import './BookingList.scss';
 
+const ScrollToTopButton = () => {
+    const scrollToTop = () => {
+        window.scrollTo({
+            top: 0,
+            behavior: 'smooth'
+        })
+    };
+    return <button className='scroll-top-top-button' onClick={scrollToTop}>Scroll To Top</button>
+};
+
 export default function BookingList({
     bookings,
     isLoading,
@@ -61,6 +71,13 @@ export default function BookingList({
                 : (
                     !isLoading && !error && <p>There are no bookings...</p>
                 )
+            }
+
+            {bookings.length === totalBookings &&
+                <div className="booking-list-end">
+                    <p>You reached the end.</p>
+                    <ScrollToTopButton />
+                </div>
             }
         </section>
     );
